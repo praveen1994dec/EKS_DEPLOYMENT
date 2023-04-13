@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: node-todo-app
+  name: node-eks
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: node-todo-app
+      app: node-eks
   template:
     metadata:
       labels:
-        app: node-todo-app
+        app: node-eks
     spec:
       containers:
-        - name: node-todo-app
-          image: sunitabachhav2007/node-todo-test:latest
+        - name: node-eks
+          image: praveensingam1994/node-eks:latest
           ports:
             - containerPort: 8000
           env:
@@ -24,11 +24,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: node-todo-app
+  name: node-eks
 spec:
   type: LoadBalancer
   ports:
     - port: 80
       targetPort: 8000
   selector:
-    app: node-todo-app
+    app: node-eks
