@@ -1,29 +1,26 @@
-pipeline {
-    agent { label 'agent1' }
-    
-    stages{
-        stage('Code'){
-            steps{
-                git url: 'https://github.com/sunitabachhav2007/node-todo-cicd.git', branch: 'master' 
-            }
-        }
-        stage('Build and Test'){
-            steps{
-                sh 'docker build . -t sunitabachhav2007/node-todo-test:latest'
-            }
-        }
-        stage('Push'){
-            steps{
-                withCredentials([usernamePassword(credentialsId: 'dockerHub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
-        	     sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
-                 sh 'docker push sunitabachhav2007/node-todo-test:latest'
-                }
-            }
-        }
-        stage('Deploy'){
-            steps{
-                sh "docker-compose down && docker-compose up -d"
-            }
-        }
+node {
+
+    stage("Git Clone"){
+
+        git credentialsId: 'GIT_HUB_CREDENTIALS', url: 'https://github.com/sunitabachhav2007/node-todo-cicd.git', branch: 'master' 
+    }
+
+     stage("Build") {
+
+       sh 'docker build . -t sunitabachhav2007/node-todo-test:latest'
+       sh 'docker image list'
+
+    }
+
+    withCredentials([string(credentialsId: 'DOCKER_HUB_PASSWORD', variable: 'PASSWORD')]) {
+        sh 'docker login -u sunitabachhav2007 -p $PASSWORD'
+    }
+
+    stage("Push Image to Docker Hub"){
+        sh 'docker push sunitabachhav2007/node-todo-test:latest'
+    }
+
+    stage("kubernetes deployment"){
+        sh 'kubectl apply -f deployment.yml'
     }
 }
