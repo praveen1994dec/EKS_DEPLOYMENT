@@ -2,7 +2,7 @@ node {
 
     stage("Git Clone"){
 
-        git credentialsId: 'GIT_HUB_CREDENTIALS', url: 'https://github.com/praveen1994dec/EKS_DEPLOYMENT.git', branch: 'main' 
+        git credentialsId: 'Git_Hub', url: 'https://github.com/praveen1994dec/EKS_DEPLOYMENT.git', branch: 'main' 
     }
 
      stage("Build") {
